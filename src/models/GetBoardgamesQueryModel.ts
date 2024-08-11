@@ -1,0 +1,3 @@
+type GetBoardgamesQueryModel = {
+  title: string
+}
