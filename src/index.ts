@@ -7,7 +7,7 @@ import { BoardgameApiModel } from './models/BoardgameApiModel';
 export const app = express()
 const port = process.env.PORT || 3000;
 
-let boardgames: Boardgame[] = [{ id: '1', title: 'Brum', players: '1' }]
+let boardgames: Boardgame[] = [{ id: '2', title: 'Brum', players: '1' }]
 
 app.use(express.json());
 
