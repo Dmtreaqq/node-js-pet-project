@@ -1,8 +1,9 @@
 import express, { Response } from 'express'
 import crypto from 'crypto'
-import { Boardgame, RequestWbody, RequestWparams, RequestWparamsAndBody, RequestWquery } from './types';
+import { Boardgame, HTTP_STATUSES, RequestWbody, RequestWparams, RequestWparamsAndBody, RequestWquery } from './types';
 import { BoardgameUpdateModel } from './models/BoardgameUpdateModel';
 import { BoardgameApiModel } from './models/BoardgameApiModel';
+import { BoardgameURLParamsModel } from './models/BoardgameURLParamsModel';
 
 export const app = express()
 const port = process.env.PORT || 3000;
@@ -18,7 +19,15 @@ app.get('/boardgames', (req: RequestWquery<GetBoardgamesQueryModel>, res: Respon
     const gamesByTitle = boardgames.filter(game => game.title.includes(title));
     res.send(gamesByTitle);
   } else {
-    res.send(boardgames);
+
+    const result = boardgames.map(game => {
+      return {
+        title: game.title,
+        players: game.players
+      }
+    })
+
+    res.send(result);
   }
 })
 
@@ -27,20 +36,20 @@ app.post('/boardgames', (req: RequestWbody<{ title: string, players: string }>, 
   
   const boardgame = {
     id: crypto.randomUUID(),
-    title: req.body.title || 'No title',
-    players: req.body.players || 'Empty'
+    title: body.title,
+    players: body.players
   }
-
-  if (body) {
+  
+  if (body && body.title !== undefined && body.players !== undefined) {
     boardgames.push(boardgame);
-    res.status(201).send(boardgame);
+    res.status(HTTP_STATUSES.CREATED_201).send(boardgame);
   } else {
-    res.status(400);
-    res.send({ message: 'Body is empty' });
+    res.status(HTTP_STATUSES.BAD_REQUEST_400);
+    res.send({ message: 'Body is empty or incorrect' });
   }
 })
 
-app.put('/boardgames/:id', (req: RequestWparamsAndBody<{ id: string }, BoardgameUpdateModel>, res: Response<Boardgame | { message: 'Game Not Found' }>) => {
+app.put('/boardgames/:id', (req: RequestWparamsAndBody<BoardgameURLParamsModel, BoardgameUpdateModel>, res: Response<Boardgame | { message: 'Game Not Found' }>) => {
   const foundGame = boardgames.find(game => game.id === req.params.id)
 
   if (foundGame) {
@@ -54,32 +63,37 @@ app.put('/boardgames/:id', (req: RequestWparamsAndBody<{ id: string }, Boardgame
 
     res.send(updatedGame);
   } else {
-    res.status(404);
+    res.status(HTTP_STATUSES.NOT_FOUND_404);
     res.send({ message: 'Game Not Found' })
   }
 })
 
-app.get('/boardgames/:id', (req: RequestWparams<{ id: string }>, res: Response<Boardgame | { message: 'Game Not Found' }>) => {
+app.get('/boardgames/:id', (req: RequestWparams<BoardgameURLParamsModel>, res: Response<Boardgame | { message: 'Game Not Found' }>) => {
   const foundGame = boardgames.find(game => game.id === req.params.id)
 
   if (foundGame) {
     res.send(foundGame);
   } else {
-    res.status(404);
+    res.status(HTTP_STATUSES.NOT_FOUND_404);
     res.send({ message: 'Game Not Found' })
   }
 })
 
-app.delete('/boardgames/:id', (req: RequestWparams<{ id: string }>, res: Response) => {
+app.delete('/boardgames/:id', (req: RequestWparams<BoardgameURLParamsModel>, res: Response) => {
   const foundGame = boardgames.find(game => game.id === req.params.id)
 
   if (!foundGame) {
-    res.status(404);
+    res.status(HTTP_STATUSES.NOT_FOUND_404);
     res.send({ message: 'Game Not Found' })
   } else {
     boardgames = boardgames.filter(game => game.id !== foundGame.id);
-    res.send(204);
+    res.send(HTTP_STATUSES.NO_CONTENT_204);
   }
+})
+
+app.delete('/tests', (_, res: Response) => {
+  boardgames = [];
+  res.send(HTTP_STATUSES.NO_CONTENT_204);
 })
 
 export const server = app.listen(port, () => {

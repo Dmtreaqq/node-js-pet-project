@@ -10,3 +10,11 @@ export type Boardgame = {
   title: string
   players: string
 }
+
+export enum HTTP_STATUSES {
+  OK_200 = 200,
+  BAD_REQUEST_400 = 400,
+  NOT_FOUND_404 = 404,
+  CREATED_201 = 201,
+  NO_CONTENT_204 = 204
+}
