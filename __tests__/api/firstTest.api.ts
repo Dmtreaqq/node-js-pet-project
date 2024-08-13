@@ -1,6 +1,5 @@
 import request from 'supertest'
-import { app } from '../../src';
-import { server } from '../../src';
+import { app } from '../../src/app';
 import { BoardgameApiModel } from '../../src/models/BoardgameApiModel';
 import { HTTP_STATUSES } from '../../src/types';
 
@@ -29,8 +28,4 @@ describe('/boardgames', () => {
     .send(body)
     .expect(HTTP_STATUSES.CREATED_201);
   })
-})
-
-afterAll(() => {
-  server.close();
 })
