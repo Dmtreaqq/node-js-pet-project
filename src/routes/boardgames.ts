@@ -1,13 +1,18 @@
-import express, { Express, Response } from "express";
+import express, { Response } from "express";
 import crypto from 'crypto'
 import { Boardgame, HTTP_STATUSES, RequestWbody, RequestWparams, RequestWparamsAndBody, RequestWquery } from '../types';
 import { BoardgameUpdateModel } from "../models/BoardgameUpdateModel";
 import { BoardgameApiModel } from "../models/BoardgameApiModel";
 import { BoardgameURLParamsModel } from "../models/BoardgameURLParamsModel";
 
-let boardgames: Boardgame[] = []
+let boardgames: Boardgame[] = [{ id: '2', title: 'Brum', players: '1' }]
 
 export const boardgamesRouter = express.Router();
+
+boardgamesRouter.delete('/tests', (_, res: Response) => {
+  boardgames = [];
+  res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+})
 
 boardgamesRouter.get('/', (req: RequestWquery<GetBoardgamesQueryModel>, res: Response<BoardgameApiModel[]>) => {
   const { title } = req.query
@@ -17,14 +22,7 @@ boardgamesRouter.get('/', (req: RequestWquery<GetBoardgamesQueryModel>, res: Res
     res.send(gamesByTitle);
   } else {
 
-    const result = boardgames.map(game => {
-      return {
-        title: game.title,
-        players: game.players
-      }
-    })
-
-    res.send(result);
+    res.send(boardgames);
   }
 })
 
@@ -86,9 +84,4 @@ boardgamesRouter.delete('/:id', (req: RequestWparams<BoardgameURLParamsModel>, r
     boardgames = boardgames.filter(game => game.id !== foundGame.id);
     res.send(HTTP_STATUSES.NO_CONTENT_204);
   }
-})
-
-boardgamesRouter.delete('/tests', (_, res: Response) => {
-  boardgames = [];
-  res.send(HTTP_STATUSES.NO_CONTENT_204);
 })
