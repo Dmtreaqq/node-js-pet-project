@@ -1,6 +1,5 @@
 import express, { Response } from "express";
-import crypto from 'crypto'
-import { Boardgame, HTTP_STATUSES, RequestWbody, RequestWparams, RequestWparamsAndBody, RequestWquery } from '../types';
+import { HTTP_STATUSES, RequestWbody, RequestWparams, RequestWparamsAndBody, RequestWquery } from '../types';
 import { BoardgameUpdateModel } from "../models/BoardgameUpdateModel";
 import { BoardgameApiModel } from "../models/BoardgameApiModel";
 import { BoardgameURLParamsModel } from "../models/BoardgameURLParamsModel";
@@ -47,7 +46,7 @@ boardgamesRouter.put('/:id', (req: RequestWparamsAndBody<BoardgameURLParamsModel
   }
 })
 
-boardgamesRouter.get('/:id', (req: RequestWparams<BoardgameURLParamsModel>, res: Response<Boardgame | { message: 'Game Not Found' }>) => {
+boardgamesRouter.get('/:id', (req: RequestWparams<BoardgameURLParamsModel>, res: Response<BoardgameApiModel | { message: 'Game Not Found' }>) => {
   const foundGame = getGameById(req.params.id);
 
   if (foundGame) {

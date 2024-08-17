@@ -1,0 +1,95 @@
+{
+    "boardgames": [
+      {
+        "id": "1",
+        "title": "Catan",
+        "yearPublished": "1995",
+        "minPlayers": "3",
+        "maxPlayers": "4",
+        "playTimeMinutes": "120",
+        "genre": "Strategy"
+      },
+      {
+        "id": "2",
+        "title": "Ticket to Ride",
+        "yearPublished": "2004",
+        "minPlayers": "2",
+        "maxPlayers": "5",
+        "playTimeMinutes": "60",
+        "genre": "Family"
+      },
+      {
+        "id": "3",
+        "title": "Pandemic",
+        "yearPublished": "2008",
+        "minPlayers": "2",
+        "maxPlayers": "4",
+        "playTimeMinutes": "45",
+        "genre": "Cooperative"
+      },
+      {
+        "id": "4",
+        "title": "Carcassonne",
+        "yearPublished": "2000",
+        "minPlayers": "2",
+        "maxPlayers": "5",
+        "playTimeMinutes": "35",
+        "genre": "Tile-laying"
+      },
+      {
+        "id": "5",
+        "title": "7 Wonders",
+        "yearPublished": "2010",
+        "minPlayers": "2",
+        "maxPlayers": "7",
+        "playTimeMinutes": "30",
+        "genre": "Card Drafting"
+      },
+      {
+        "id": "6",
+        "title": "Codenames",
+        "yearPublished": "2015",
+        "minPlayers": "2",
+        "maxPlayers": "8",
+        "playTimeMinutes": "15",
+        "genre": "Party"
+      },
+      {
+        "id": "7",
+        "title": "Scythe",
+        "yearPublished": "2016",
+        "minPlayers": "1",
+        "maxPlayers": "7",
+        "playTimeMinutes": "115",
+        "genre": "Strategy"
+      },
+      {
+        "id": "8",
+        "title": "Terraforming Mars",
+        "yearPublished": "2016",
+        "minPlayers": "1",
+        "maxPlayers": "5",
+        "playTimeMinutes": "120",
+        "genre": "Strategy"
+      },
+      {
+        "id": "9",
+        "title": "Dominion",
+        "yearPublished": "2008",
+        "minPlayers": "2",
+        "maxPlayers": "4",
+        "playTimeMinutes": "30",
+        "genre": "Deck Building"
+      },
+      {
+        "id": "10",
+        "title": "Gloomhaven",
+        "yearPublished": "2017",
+        "minPlayers": "1",
+        "maxPlayers": "4",
+        "playTimeMinutes": "120",
+        "genre": "Adventure"
+      }
+    ]
+  }
+  

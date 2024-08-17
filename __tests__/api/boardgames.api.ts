@@ -13,7 +13,7 @@ afterAll(async () => {
 })
 
 let createdBoardgame: BoardgameApiModel | null = null
-const body: BoardgameCreateModel = { title: 'Test', players: '1' }
+const body: BoardgameCreateModel = { title: 'Test', minPlayers: '1' } as any
 
 describe('/boardgames', () => {
   it('Should successfully create a boardgame', async () => {

@@ -3,5 +3,9 @@ export type BoardgameCreateModel = {
    * Boardgame title
    */
   title: string
-  players: string
+  minPlayers: string
+  maxPlayers: string
+  genre: string
+  yearPublished: string
+  playTimeMinutes: string
 }

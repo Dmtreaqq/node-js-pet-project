@@ -1,5 +1,5 @@
 import express from 'express'
-import { boardgamesRouter } from './routes/boardgames';
+import { boardgamesRouter } from './routes/boardgames.router';
 
 export const app = express()
 
