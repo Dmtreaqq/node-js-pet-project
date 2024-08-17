@@ -49,7 +49,11 @@ describe('/boardgames', () => {
     await request(app).delete(`/boardgames/${createdBoardgame?.id}`).expect(204);
   })
 
-  it('Should return 404 and not found message', async () => {
+  it('Should return 404 and not found message While Get', async () => {
     await request(app).get(`/boardgames/${createdBoardgame}`).expect(404, { message: 'Game Not Found' })
+  })
+
+  it('Should return 404 and not found message While Delete', async () => {
+    await request(app).delete(`/boardgames/${createdBoardgame}`).expect(404, { message: 'Game Not Found' })
   })
 })

@@ -4,67 +4,51 @@ import { Boardgame, HTTP_STATUSES, RequestWbody, RequestWparams, RequestWparamsA
 import { BoardgameUpdateModel } from "../models/BoardgameUpdateModel";
 import { BoardgameApiModel } from "../models/BoardgameApiModel";
 import { BoardgameURLParamsModel } from "../models/BoardgameURLParamsModel";
-
-let boardgames: Boardgame[] = [{ id: '2', title: 'Brum', players: '1' }]
+import { getGames, deleteGameById, getGameById, deleteBoardgamesBeforeTest, updateGameById, createBoardgame } from "../repositories/boardgames.repository";
+import { BoardgameCreateModel } from "../models/BoardgameCreateModel";
 
 export const boardgamesRouter = express.Router();
 
 boardgamesRouter.delete('/tests', (_, res: Response) => {
-  boardgames = [];
+  deleteBoardgamesBeforeTest();
   res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 })
 
 boardgamesRouter.get('/', (req: RequestWquery<GetBoardgamesQueryModel>, res: Response<BoardgameApiModel[]>) => {
   const { title } = req.query
 
-  if (title) {
-    const gamesByTitle = boardgames.filter(game => game.title.includes(title));
-    res.send(gamesByTitle);
-  } else {
+  const boardgames = getGames(title);
 
-    res.send(boardgames);
-  }
+  res.send(boardgames);
 })
 
-boardgamesRouter.post('/', (req: RequestWbody<{ title: string, players: string }>, res: Response) => {
+boardgamesRouter.post('/', (req: RequestWbody<BoardgameCreateModel>, res: Response<BoardgameApiModel | { message: string }>) => {
   const body = req.body
 
-  const boardgame = {
-    id: crypto.randomUUID(),
-    title: body.title,
-    players: body.players
-  }
+  const createdBoardgame = createBoardgame(body);
 
-  if (body && body.title !== undefined && body.players !== undefined) {
-    boardgames.push(boardgame);
-    res.status(HTTP_STATUSES.CREATED_201).send(boardgame);
+  if (createdBoardgame) {
+    res.status(HTTP_STATUSES.CREATED_201)
+    res.send(createdBoardgame);
   } else {
     res.status(HTTP_STATUSES.BAD_REQUEST_400);
     res.send({ message: 'Body is empty or incorrect' });
   }
 })
 
-boardgamesRouter.put('/:id', (req: RequestWparamsAndBody<BoardgameURLParamsModel, BoardgameUpdateModel>, res: Response<Boardgame | { message: 'Game Not Found' }>) => {
-  const foundGame = boardgames.find(game => game.id === req.params.id)
+boardgamesRouter.put('/:id', (req: RequestWparamsAndBody<BoardgameURLParamsModel, BoardgameUpdateModel>, res: Response<BoardgameApiModel | { message: string }>) => {
+    const updatedGame = updateGameById(req.params.id, req.body);
 
-  if (foundGame) {
-    const updatedGame = {
-      id: foundGame.id,
-      title: req.body.title || foundGame.title,
-      players: req.body.players || foundGame.players
-    }
-
-    boardgames = boardgames.map(game => game.id === foundGame.id ? updatedGame : game)
-
-    res.send(updatedGame);
-  } else {
+    if (updatedGame) {
+      res.send(updatedGame);
+    } else {
     res.status(HTTP_STATUSES.NOT_FOUND_404);
     res.send({ message: 'Game Not Found' })
   }
 })
 
 boardgamesRouter.get('/:id', (req: RequestWparams<BoardgameURLParamsModel>, res: Response<Boardgame | { message: 'Game Not Found' }>) => {
-  const foundGame = boardgames.find(game => game.id === req.params.id)
+  const foundGame = getGameById(req.params.id);
 
   if (foundGame) {
     res.send(foundGame);
@@ -75,13 +59,14 @@ boardgamesRouter.get('/:id', (req: RequestWparams<BoardgameURLParamsModel>, res:
 })
 
 boardgamesRouter.delete('/:id', (req: RequestWparams<BoardgameURLParamsModel>, res: Response) => {
-  const foundGame = boardgames.find(game => game.id === req.params.id)
-
-  if (!foundGame) {
-    res.status(HTTP_STATUSES.NOT_FOUND_404);
-    res.send({ message: 'Game Not Found' })
-  } else {
-    boardgames = boardgames.filter(game => game.id !== foundGame.id);
+  try {
+    deleteGameById(req.params.id);
+    
     res.send(HTTP_STATUSES.NO_CONTENT_204);
+  } catch (e: any) {
+    if (e.message === 'Game not found') {
+      res.status(HTTP_STATUSES.NOT_FOUND_404);
+      res.send({ message: 'Game Not Found' })
+    }
   }
 })
