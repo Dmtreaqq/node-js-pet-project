@@ -20,7 +20,7 @@ export const getGames = (title: string = ''): Boardgame[] => {
 
 export const createBoardgame = (boardgame: BoardgameCreateModel): Boardgame | undefined => {
   if (boardgame && boardgame.title !== undefined) {
-    const createdBoardgame = { ...boardgame, id: crypto.randomUUID() }
+    const createdBoardgame = { id: crypto.randomUUID(), ...boardgame }
 
     boardgames.push(createdBoardgame);
     return createdBoardgame;

@@ -13,14 +13,21 @@ afterAll(async () => {
 })
 
 let createdBoardgame: BoardgameApiModel | null = null
-const body: BoardgameCreateModel = { title: 'Test', minPlayers: '1' } as any
+const body: BoardgameCreateModel = {
+  title: 'Test',
+  minPlayers: '1',
+  maxPlayers: '2',
+  genre: 'straetgy',
+  playTimeMinutes: '20 min',
+  yearPublished: '2022'
+}
 
-describe('/boardgames', () => {
-  it('Should successfully create a boardgame', async () => {
+describe('/boardgames positive', () => {
+  it('Should successfully create a boardgame and return 201', async () => {
     const response = await request(app)
       .post('/boardgames')
       .send(body)
-      .expect(HTTP_STATUSES.CREATED_201);
+      .expect(HTTP_STATUSES.CREATED_201)
 
     createdBoardgame = response.body;
 
@@ -30,7 +37,7 @@ describe('/boardgames', () => {
     });
   })
 
-  it('Should return 200 and 1 boardgame', async () => {
+  it('Should get by id return 200 and 1 boardgame', async () => {
     await request(app).get('/boardgames').expect(200, [createdBoardgame]);
   })
 
@@ -48,12 +55,28 @@ describe('/boardgames', () => {
   it('Should return 204 while successful delete boardgame', async () => {
     await request(app).delete(`/boardgames/${createdBoardgame?.id}`).expect(204);
   })
+})
 
+describe('/boardgames negative', () => {
   it('Should return 404 and not found message While Get', async () => {
     await request(app).get(`/boardgames/${createdBoardgame}`).expect(404, { message: 'Game Not Found' })
   })
 
   it('Should return 404 and not found message While Delete', async () => {
     await request(app).delete(`/boardgames/${createdBoardgame}`).expect(404, { message: 'Game Not Found' })
+  })
+
+  it('Should return 400 when try to get boardgames with numeric query title', async () => {
+    await request(app).get('/boardgames?title=123').expect(400, {
+      "errors": [
+        {
+          "type": "field",
+          "value": "123",
+          "msg": "Can't be a number",
+          "path": "title",
+          "location": "query"
+        }
+      ]
+    });
   })
 })

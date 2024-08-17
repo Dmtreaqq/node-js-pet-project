@@ -1,10 +1,13 @@
 import express, { Response } from "express";
+import { body, ValidationError, validationResult } from "express-validator";
 import { HTTP_STATUSES, RequestWbody, RequestWparams, RequestWparamsAndBody, RequestWquery } from '../types';
 import { BoardgameUpdateModel } from "../models/BoardgameUpdateModel";
 import { BoardgameApiModel } from "../models/BoardgameApiModel";
 import { BoardgameURLParamsModel } from "../models/BoardgameURLParamsModel";
 import { getGames, deleteGameById, getGameById, deleteBoardgamesBeforeTest, updateGameById, createBoardgame } from "../repositories/boardgames.repository";
 import { BoardgameCreateModel } from "../models/BoardgameCreateModel";
+import { createPlayersChain, createQueryTitleChain, createTitleChain } from "../middlewares/validationChains";
+import { validationMiddleware } from "../middlewares/validation.middleware";
 
 export const boardgamesRouter = express.Router();
 
@@ -13,7 +16,10 @@ boardgamesRouter.delete('/tests', (_, res: Response) => {
   res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 })
 
-boardgamesRouter.get('/', (req: RequestWquery<GetBoardgamesQueryModel>, res: Response<BoardgameApiModel[]>) => {
+boardgamesRouter.get('/',
+  createQueryTitleChain(),
+  validationMiddleware,
+  (req: RequestWquery<GetBoardgamesQueryModel>, res: Response<BoardgameApiModel[]>) => {
   const { title } = req.query
 
   const boardgames = getGames(title);
@@ -21,21 +27,23 @@ boardgamesRouter.get('/', (req: RequestWquery<GetBoardgamesQueryModel>, res: Res
   res.send(boardgames);
 })
 
-boardgamesRouter.post('/', (req: RequestWbody<BoardgameCreateModel>, res: Response<BoardgameApiModel | { message: string }>) => {
-  const body = req.body
+boardgamesRouter.post('/',
+  createTitleChain(),
+  createPlayersChain(),
+  validationMiddleware,
+  (req: RequestWbody<BoardgameCreateModel>, res: Response<BoardgameApiModel | { errors: ValidationError[] }>) => {
 
-  const createdBoardgame = createBoardgame(body);
+  const createdBoardgame = createBoardgame(req.body);
 
-  if (createdBoardgame) {
-    res.status(HTTP_STATUSES.CREATED_201)
-    res.send(createdBoardgame);
-  } else {
-    res.status(HTTP_STATUSES.BAD_REQUEST_400);
-    res.send({ message: 'Body is empty or incorrect' });
-  }
+  res.status(HTTP_STATUSES.CREATED_201).send(createdBoardgame);
 })
 
-boardgamesRouter.put('/:id', (req: RequestWparamsAndBody<BoardgameURLParamsModel, BoardgameUpdateModel>, res: Response<BoardgameApiModel | { message: string }>) => {
+boardgamesRouter.put('/:id',
+  createTitleChain(),
+  createPlayersChain(),
+  validationMiddleware,
+  (req: RequestWparamsAndBody<BoardgameURLParamsModel, BoardgameUpdateModel>, res: Response<BoardgameApiModel | any>) => {
+    
     const updatedGame = updateGameById(req.params.id, req.body);
 
     if (updatedGame) {
