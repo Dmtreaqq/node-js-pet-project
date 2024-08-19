@@ -8,6 +8,7 @@ import { getGames, deleteGameById, getGameById, deleteBoardgamesBeforeTest, upda
 import { BoardgameCreateModel } from "../models/BoardgameCreateModel";
 import { createPlayersChain, createQueryTitleChain, createTitleChain } from "../middlewares/validationChains";
 import { validationMiddleware } from "../middlewares/validation.middleware";
+import { basicAuthMiddleware } from "../middlewares/basicAuth.middlewares";
 
 export const boardgamesRouter = express.Router();
 
@@ -28,6 +29,7 @@ boardgamesRouter.get('/',
 })
 
 boardgamesRouter.post('/',
+  basicAuthMiddleware,
   createTitleChain(),
   createPlayersChain(),
   validationMiddleware,
