@@ -5,11 +5,11 @@ import boardgameJson from '../boardgames.json';
 
 let boardgames: Boardgame[] = [...boardgameJson.boardgames];
 
-export const getGameById = (id: string): Boardgame | undefined => {
-  return boardgames.find(game => game.id === id);
+export const getGameById = async (id: string): Promise<Boardgame | null> => {
+  return boardgames.find(game => game.id === id) || null;
 }
 
-export const getGames = (title: string = ''): Boardgame[] => {
+export const getGames = async (title: string = ''): Promise<Boardgame[]> => {
   if (title) {
     const gamesByTitle = boardgames.filter(game => game.title.includes(title));
     return gamesByTitle;
@@ -18,7 +18,7 @@ export const getGames = (title: string = ''): Boardgame[] => {
   }
 }
 
-export const createBoardgame = (boardgame: BoardgameCreateModel): Boardgame | undefined => {
+export const createBoardgame = async (boardgame: BoardgameCreateModel): Promise<Boardgame | undefined> => {
   if (boardgame && boardgame.title !== undefined) {
     const createdBoardgame = { id: crypto.randomUUID(), ...boardgame }
 
@@ -27,7 +27,7 @@ export const createBoardgame = (boardgame: BoardgameCreateModel): Boardgame | un
   }
 }
 
-export const updateGameById = (id: string, boardgame: BoardgameUpdateModel): Boardgame | undefined => {
+export const updateGameById = async (id: string, boardgame: BoardgameUpdateModel): Promise<Boardgame | undefined> => {
   const foundGame = boardgames.find(game => game.id === id);
 
   if (foundGame) {
@@ -41,7 +41,7 @@ export const updateGameById = (id: string, boardgame: BoardgameUpdateModel): Boa
   }
 }
 
-export const deleteGameById = (id: string) => {
+export const deleteGameById = async (id: string) => {
   const foundGame = boardgames.find(game => game.id === id);
 
   if (!foundGame) {
@@ -51,6 +51,6 @@ export const deleteGameById = (id: string) => {
   }
 }
 
-export const deleteBoardgamesBeforeTest = () => {
+export const deleteBoardgamesBeforeTest = async () => {
   boardgames = [];
 }

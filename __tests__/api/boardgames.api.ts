@@ -27,6 +27,7 @@ describe('/boardgames positive', () => {
     const response = await request(app)
       .post('/boardgames')
       .send(body)
+      .set('Authorization', 'Basic YWRtaW46MTIzNDU=')
       .expect(HTTP_STATUSES.CREATED_201)
 
     createdBoardgame = response.body;
