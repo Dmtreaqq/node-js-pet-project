@@ -6,7 +6,7 @@ import { BoardgameApiModel } from "../models/BoardgameApiModel";
 import { BoardgameURLParamsModel } from "../models/BoardgameURLParamsModel";
 import { boardgamesService } from "../services/boardgames.service";
 import { BoardgameCreateModel } from "../models/BoardgameCreateModel";
-import { createPlayersChain, createQueryTitleChain, createTitleChain } from "../middlewares/validationChains";
+import { createPlayersChain, createQueryPaginationChain, createQueryTitleChain, createTitleChain } from "../middlewares/validationChains";
 import { validationMiddleware } from "../middlewares/validation.middleware";
 import { basicAuthMiddleware } from "../middlewares/basicAuth.middlewares";
 
@@ -19,11 +19,12 @@ boardgamesRouter.delete('/tests', async (_, res: Response) => {
 
 boardgamesRouter.get('/',
   createQueryTitleChain(),
+  createQueryPaginationChain(),
   validationMiddleware,
   async (req: RequestWquery<GetBoardgamesQueryModel>, res: Response<BoardgameApiModel[]>) => {
-  const { title } = req.query
+  const { title, page, pageSize } = req.query
 
-  const boardgames = await boardgamesService.getGames(title);
+  const boardgames = await boardgamesService.getGames(title, Number(page), Number(pageSize));
 
   res.send(boardgames);
 })

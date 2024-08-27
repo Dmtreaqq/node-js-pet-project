@@ -8,8 +8,8 @@ export const boardgamesService = {
         return boardgamesRepository.getGameById(id);
     },
     
-    async getGames(title: string = ''): Promise<Boardgame[]> {
-      return boardgamesRepository.getGames(title);
+    async getGames(title: string = '', page: number = 1, pageSize: number = 10): Promise<Boardgame[]> {
+      return boardgamesRepository.getGames(title, page, pageSize);
     },
     
     async createBoardgame(boardgame: BoardgameCreateModel): Promise<Boardgame | undefined> {

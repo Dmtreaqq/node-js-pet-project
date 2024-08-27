@@ -8,11 +8,17 @@ export const boardgamesRepository = {
         return boardgamesCollection.findOne({ id })
     },
     
-    async getGames(title: string = ''): Promise<Boardgame[]> {
+    async getGames(title: string = '', page: number, pageSize: number): Promise<Boardgame[]> {
       if (title) {
-        return boardgamesCollection.find({ title: { $regex: title } }).toArray();
+        return boardgamesCollection
+                .find({ title: { $regex: title } })
+                .skip((page - 1) * pageSize)
+                .limit(pageSize).toArray();
       } else {
-        return boardgamesCollection.find({}).toArray();
+        return boardgamesCollection
+                .find({})
+                .skip((page - 1) * pageSize)
+                .limit(pageSize).toArray();
       }
     },
     
