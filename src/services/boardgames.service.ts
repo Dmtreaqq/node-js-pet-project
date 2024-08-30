@@ -1,5 +1,6 @@
 import { BoardgameCreateModel } from "../models/BoardgameCreateModel";
 import { BoardgameUpdateModel } from "../models/BoardgameUpdateModel";
+import { MultipleBoardgameApiModel } from "../models/MultipleBoardgameApiModel";
 import { boardgamesRepository } from "../repositories/boardgames-db.repository";
 import { Boardgame } from "../types";
 
@@ -8,8 +9,8 @@ export const boardgamesService = {
         return boardgamesRepository.getGameById(id);
     },
     
-    async getGames(title: string = '', page: number = 1, pageSize: number = 10): Promise<Boardgame[]> {
-      return boardgamesRepository.getGames(title, page, pageSize);
+    async getGames(title: string = '', page: string = '1', pageSize: string = '10'): Promise<MultipleBoardgameApiModel> {
+      return boardgamesRepository.getGames(title, Number(page), Number(pageSize));
     },
     
     async createBoardgame(boardgame: BoardgameCreateModel): Promise<Boardgame | undefined> {

@@ -10,4 +10,4 @@ export const createPlayersChain = () => body(['minPlayers', 'maxPlayers'])
 
 export const createQueryTitleChain = () => query('title').optional().isAlpha().withMessage('Can\'t be a number')
 
-export const createQueryPaginationChain = () => query(['page', 'pageSize']).isNumeric().withMessage('Can\'t be a string');
+export const createQueryPaginationChain = () => query(['page', 'pageSize']).optional().isNumeric().withMessage('Can\'t be a string');

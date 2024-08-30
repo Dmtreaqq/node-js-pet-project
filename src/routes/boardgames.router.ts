@@ -9,6 +9,7 @@ import { BoardgameCreateModel } from "../models/BoardgameCreateModel";
 import { createPlayersChain, createQueryPaginationChain, createQueryTitleChain, createTitleChain } from "../middlewares/validationChains";
 import { validationMiddleware } from "../middlewares/validation.middleware";
 import { basicAuthMiddleware } from "../middlewares/basicAuth.middlewares";
+import { MultipleBoardgameApiModel } from "../models/MultipleBoardgameApiModel";
 
 export const boardgamesRouter = express.Router();
 
@@ -21,12 +22,12 @@ boardgamesRouter.get('/',
   createQueryTitleChain(),
   createQueryPaginationChain(),
   validationMiddleware,
-  async (req: RequestWquery<GetBoardgamesQueryModel>, res: Response<BoardgameApiModel[]>) => {
+  async (req: RequestWquery<GetBoardgamesQueryModel>, res: Response<MultipleBoardgameApiModel>) => {
   const { title, page, pageSize } = req.query
 
-  const boardgames = await boardgamesService.getGames(title, Number(page), Number(pageSize));
+  const boardgames = await boardgamesService.getGames(title, page, pageSize);
 
-  res.send(boardgames);
+  res.json(boardgames);
 })
 
 boardgamesRouter.post('/',
