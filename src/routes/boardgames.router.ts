@@ -8,8 +8,8 @@ import { boardgamesService } from "../services/boardgames.service";
 import { BoardgameCreateModel } from "../models/BoardgameCreateModel";
 import { createPlayersChain, createQueryPaginationChain, createQueryTitleChain, createTitleChain } from "../middlewares/validationChains";
 import { validationMiddleware } from "../middlewares/validation.middleware";
-import { basicAuthMiddleware } from "../middlewares/basicAuth.middlewares";
 import { MultipleBoardgameApiModel } from "../models/MultipleBoardgameApiModel";
+import { jwtAuthMiddleware } from "../middlewares/jwtAuth.middleware";
 
 export const boardgamesRouter = express.Router();
 
@@ -31,7 +31,7 @@ boardgamesRouter.get('/',
 })
 
 boardgamesRouter.post('/',
-  basicAuthMiddleware,
+  jwtAuthMiddleware,
   createTitleChain(),
   createPlayersChain(),
   validationMiddleware,

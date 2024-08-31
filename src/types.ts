@@ -1,5 +1,13 @@
 import { Request } from "express"
 
+declare global {
+  namespace Express {
+      export interface Request {
+          user: any
+      }
+  }
+}
+
 export type RequestWbody<T> = Request<{}, {}, T>
 export type RequestWquery<T> = Request<{}, {}, {}, T>
 export type RequestWparams<T> = Request<T>
