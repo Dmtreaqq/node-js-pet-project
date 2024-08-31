@@ -17,3 +17,4 @@ export const runDb = async () => {
 }
 
 export const boardgamesCollection = client.db('boardify').collection<Boardgame>('boardify');
+export const usersCollection = client.db('boardify').collection<Boardgame>('users');
