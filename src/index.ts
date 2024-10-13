@@ -1,3 +1,4 @@
+require('dotenv').config({ path: '.env.local' })
 import { app } from "./app";
 import { runDb } from "./repositories/db";
 
